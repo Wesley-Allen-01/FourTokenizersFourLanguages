@@ -10,3 +10,5 @@ venv/
 *.dll
 *.so
 *.dylib
+
+notes.md
