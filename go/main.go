@@ -13,13 +13,25 @@ func main() {
 
 	fmt.Printf("Loaded %d characters of text\n", len(text))
 
-	preview := text[:300]
-	fmt.Printf("Preview: %s\n", preview)
+	subset_size := 0.5
+	preview := text[:int(float64(len(text)) * subset_size)]
 
-	pretokens, err := Pretokenize(preview)
+	tokenizer := NewGoTokenizer(5000)
+	err = tokenizer.Train(preview, true) 
 	if err != nil {
-		log.Fatalf("failed to pretokenize: %v", err)
+		log.Fatalf("failed to train tokenizer: %v", err)
 	}
 
-	fmt.Printf("First few pretokens: %v\n", pretokens[:5])
+	test_str := "This is a test string to see what happens, I hope it works🫢"
+	encoded := tokenizer.Encode(test_str)
+
+	decoded := tokenizer.Decode(encoded)
+	fmt.Printf("Decoded: %s\n", decoded)
+
+	tokens := tokenizer.IdsToTokens(encoded)
+	for i := 0; i < len(tokens); i++ {
+		fmt.Printf("%s \n", tokens[i])
+	}
+
+
 }

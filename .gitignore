@@ -12,3 +12,5 @@ venv/
 *.dylib
 
 notes.md
+
+.vscode/

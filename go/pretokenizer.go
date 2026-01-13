@@ -6,10 +6,10 @@ import (
 
 const gpt2Pattern = `'(?i:[sdmt]|ll|ve|re)|[^\r\n\p{L}\p{N}]?\p{L}+|\p{N}{1,3}| ?[^\s\p{L}\p{N}]+[\r\n]*|\s+$|\s*[\r\n]|\s+(?!\S)|\s`
 
-func Pretokenize(text string) ([][]byte, error) {
+func Pretokenize(text string) ([][]int, error) {
 	re := regexp2.MustCompile(gpt2Pattern, regexp2.None)
 
-	var pretokens [][]byte
+	var pretokens [][]int
 	match, err := re.FindStringMatch(text)
 	if err != nil {
 		return nil, err
@@ -17,7 +17,13 @@ func Pretokenize(text string) ([][]byte, error) {
 
 	for match != nil {
 		token := match.String()
-		pretokens = append(pretokens, []byte(token))
+		bytes := []byte(token)
+
+		ints := make([]int, len(bytes))
+		for i, b := range bytes {
+			ints[i] = int(b)
+		}
+		pretokens = append(pretokens, ints)
 
 		match, err = re.FindNextMatch(match)
 		if err != nil {
